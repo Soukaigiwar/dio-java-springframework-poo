@@ -1,8 +1,6 @@
 package br.com.dio.desafio;
 
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class Dev {
 
@@ -11,15 +9,30 @@ public class Dev {
     private Set<Conteudo> conteudosConcluidos = new LinkedHashSet<>();
 
     public void inscreverBootcamp(Bootcamp bootcamp){
-
+        this.conteudosInscritos.addAll(bootcamp.getConteudos());
+        bootcamp.getDevsInscritos().add(this);
     }
 
     public void progredir(){
+        Optional<Conteudo> conteudo = this.conteudosInscritos.stream().findFirst();
 
+        if(conteudo.isPresent()){
+            this.conteudosConcluidos.add(conteudo.get());
+            this.conteudosInscritos.remove(conteudo.get());
+        } else {
+            System.err.println("Voce não esta matriculado em nenhum conteudo.");
+        }
     }
 
-    public void calcularTotalXP(){
+    public double calcularTotalXP(){
+        Iterator<Conteudo> iterator = this.conteudosConcluidos.iterator();
+        double soma = 0;
 
+        while (iterator.hasNext()){
+            double next = iterator.next().calcularXP();
+            soma += next;
+        }
+        return soma;
     }
 
     public String getNome() {
